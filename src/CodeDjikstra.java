@@ -10,18 +10,20 @@ public class CodeDjikstra {
         Scanner sc = new Scanner(System.in);
         int n = sc.nextInt();
         int m = sc.nextInt();
-        System.out.println(n + " "+m);
+//        System.out.println(n + " "+m);
 
-        Map<Integer, List<Edge>> adjList = new HashMap<Integer, List<Edge>>();
-        List<int[]> resPos = new LinkedList<int[]>();
+        Map<Node, List<Edge>> adjList = new HashMap<Node, List<Edge>>();
 
         //Setup method
         for(int i = 0; i < m; i++){
-            int n1 = sc.nextInt();
-            int n2 = sc.nextInt();
+            int n1Val = sc.nextInt();
+            int n2Val = sc.nextInt();
+            Node n1 = new Node();
+            Node n2 = new Node();
+            n1.value = n1Val;
+            n2.value = n2Val;
             int weight = sc.nextInt();
 //            System.out.println(n1 + " " + n2 + " " + weight);
-            int[] toFind = {n2, n1};
 
             Edge e1 = new Edge();
             Edge e2 = new Edge();
@@ -46,54 +48,84 @@ public class CodeDjikstra {
             } else {
                 adjList.get(n2).add(e2);
             }
-
-
-            resPos.add(toFind);
         }
+        Node n2 = new Node();
+        n2.value = n;
+        Node n1 = new Node();
+        n1.value = 1;
+        System.out.print(dijkstra(adjList, n1, n2));
 
-        for(int[] pos: resPos){
-            System.out.print(dijkstra(adjList, pos[0], pos[1]) + " ");
-        }
+//        for(int[] pos: resPos){
+//            System.out.print(dijkstra(adjList, pos[0], pos[1]) + " ");
+//        }
 
     }
 
-    public static int dijkstra(Map<Integer, List<Edge>> adjList, int start, int end){
-        Map<Integer, Integer> dist = new HashMap<Integer, Integer>();
-        PriorityQueue<Integer> q = new PriorityQueue<Integer>(10, new Compare());
+    public static String dijkstra(Map<Node, List<Edge>> adjList, Node start, Node end){
+        final Map<Node, Integer> dist = new HashMap<Node, Integer>();
+        final Map<Integer, Integer> prev = new HashMap<Integer, Integer>();
+        PriorityQueue<Node> q = new PriorityQueue<Node>(10, new Comparator<Node>(){
+            public int compare(Node o1, Node o2) {
+                Integer dist1 = dist.get(o1);
+                Integer dist2 = dist.get(o2);
+                if(dist1 == null) dist1 = Integer.MAX_VALUE;
+                if(dist2 == null) dist2 = Integer.MAX_VALUE;
+                return dist1 - dist2;
+            }
+        });
         q.add(start);
         dist.put(start, 0);
+//        System.out.println("start" + start + " end "+end);
 
         while(!q.isEmpty()){
-            System.out.println(q);
-            int node = q.poll();
+//            System.out.println(q);
+            Node node = q.poll();
             int weight = dist.get(node) == null ? 0 : dist.get(node);
 
-            if(node == end){
-                System.out.println("reached end");
-                System.out.println(dist.get(node));
-                return dist.get(node);
+            if(node.equals(end)){
+//                System.out.println("reached end");
+//                System.out.println(dist.get(node));
+                int current = end.value;
+                ;
+                StringBuilder result = new StringBuilder();
+                while(current != start.value){
+                    result.insert(0, current+ " ");
+                    current = prev.get(current);
+                }
+                result.insert(0,current + " ");
+                return result.toString();
+
             }
-            System.out.println(adjList.get(node));
+//            System.out.println(adjList.get(node));
             if(adjList.containsKey(node)) {
                 for (Edge e : adjList.get(node)) {
-                    System.out.println(e);
+//                    System.out.println(e);
                     int newDist = e.weight + weight;
-                    if (!dist.containsKey(e.dest) || newDist < weight) {
-                        dist.put(node, newDist);
+                    if (!dist.containsKey(e.dest) || dist.get(e.dest) > newDist) {
+                        dist.put(e.dest, newDist);
+                        q.add(e.dest);
+                        prev.put(e.dest.value, node.value);
+//                        Node dest = e.dest;
+//                        dest.prevNode = node.value;
+//                        System.out.println("node" + node);
+//                        System.out.println("prevNode" + dest);
+//                        adjList.put(dest, adjList.get(dest));
+//                        System.out.println(adjList);
                     }
-                    q.add(e.dest);
                 }
             }
         }
-        System.out.println(dist);
-        if(!dist.containsKey(end)) return -1;
-        return dist.get(end);
+//        System.out.println(dist);
+
+
+        return "-1";
+
     }
 
 
     public static class Edge{
         int weight;
-        int dest;
+        Node dest;
 
         @Override
         public String toString() {
@@ -104,10 +136,32 @@ public class CodeDjikstra {
         }
     }
 
-    public static class Compare implements Comparator<Integer>{
-        public int compare(Integer o1, Integer o2) {
-            if()
-            return o2 - o1;
+    public static class Node{
+        int value;
+        int prevNode;
+
+        @Override
+        public String toString() {
+            return "Node{" +
+                    "value=" + value +
+                    ", prevNode=" + prevNode +
+                    '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Node node = (Node) o;
+
+            return value == node.value;
+
+        }
+
+        @Override
+        public int hashCode() {
+            return value;
         }
     }
 }
