@@ -31,8 +31,8 @@ public class CodeSerialTime {
             //blank line
             sc.nextLine();
         }
-        int tapX = sc.nextInt();
-        int tapY = sc.nextInt();
+        int tapX = sc.nextInt() - 1;
+        int tapY = sc.nextInt() - 1;
 //        printPlate(plate);
 //        System.out.println("tap: "+tapX+", "+tapY);
 
@@ -47,9 +47,14 @@ public class CodeSerialTime {
         int[] currentPos = {0, startX, startY};
         Queue<int[]> q = new LinkedList<int[]>();
         q.add(currentPos);
+        visited[currentPos[0]][currentPos[1]][currentPos[2]] = true;
 
         while(!q.isEmpty()){
             int[] pos = q.poll();
+            int z = pos[0];
+            int x = pos[1];
+            int y = pos[2];
+//            System.out.println(Arrays.toString(pos));
             timeCounter++;
             numEmpty--;
             if(numEmpty == 0)
@@ -60,10 +65,6 @@ public class CodeSerialTime {
             int[] dx6 = {0, 1, 0, 0, 0, -1};
             int[] dy6 = {0, 0, 0, 1, -1, 0};
 
-            int z = pos[0];
-            int x = pos[1];
-            int y = pos[2];
-
             for(int d = 0; d < dz6.length; d++){
                 for(int a = 0; a < dx6.length; a++){
                     for(int b = 0; b < dy6.length; b++){
@@ -71,9 +72,14 @@ public class CodeSerialTime {
                         int ydy = y + dy6[b];
                         int zdz = z + dz6[d];
                         if(0 <= zdz && zdz < visited.length && 0 <= xdx && xdx < visited[0].length &&
-                                0 <= ydy && ydy < visited[0][0].length && !visited[zdz][xdx][ydy]){
-                            if(plate[zdz][xdx][ydy] == '.')
-                                q.add(new int[]{zdz, xdx, ydy});
+                                0 <= ydy && ydy < visited[0][0].length){
+                            if(plate[zdz][xdx][ydy] == '.'  && !visited[zdz][xdx][ydy]) {
+                                int[] addPos = {zdz, xdx, ydy};
+                                visited[zdz][xdx][ydy] = true;
+                                q.add(addPos);
+//                                System.out.println(Arrays.toString(addPos));
+//                                System.out.println(visited[zdz][xdx][ydy]);
+                            }
                         }
                     }
                 }
