@@ -18,17 +18,16 @@ public class CodeDjikstra {
         for(int i = 0; i < m; i++){
             int n1Val = sc.nextInt();
             int n2Val = sc.nextInt();
+            int weight = sc.nextInt();
             Node n1 = new Node();
             Node n2 = new Node();
             n1.value = n1Val;
             n2.value = n2Val;
-            int weight = sc.nextInt();
+
 //            System.out.println(n1 + " " + n2 + " " + weight);
 
-            Edge e1 = new Edge();
-            Edge e2 = new Edge();
-            e1.weight = weight;
-            e1.dest = n2;
+            Edge e1 = new Edge(weight, n2);
+            Edge e2 = new Edge(weight, n1);
             if(!adjList.containsKey(n1)){
                 List<Edge> edges = new LinkedList<Edge>();
                 edges.add(e1);
@@ -54,11 +53,7 @@ public class CodeDjikstra {
         Node n1 = new Node();
         n1.value = 1;
         System.out.print(dijkstra(adjList, n1, n2));
-
-//        for(int[] pos: resPos){
-//            System.out.print(dijkstra(adjList, pos[0], pos[1]) + " ");
-//        }
-
+        sc.close();
     }
 
     public static String dijkstra(Map<Node, List<Edge>> adjList, Node start, Node end){
@@ -80,13 +75,9 @@ public class CodeDjikstra {
         while(!q.isEmpty()){
 //            System.out.println(q);
             Node node = q.poll();
-            int weight = dist.get(node) == null ? 0 : dist.get(node);
 
             if(node.equals(end)){
-//                System.out.println("reached end");
-//                System.out.println(dist.get(node));
                 int current = end.value;
-                ;
                 StringBuilder result = new StringBuilder();
                 while(current != start.value){
                     result.insert(0, current+ " ");
@@ -96,21 +87,15 @@ public class CodeDjikstra {
                 return result.toString();
 
             }
-//            System.out.println(adjList.get(node));
             if(adjList.containsKey(node)) {
                 for (Edge e : adjList.get(node)) {
 //                    System.out.println(e);
+                    int weight = dist.get(node) == null ? 0 : dist.get(node);
                     int newDist = e.weight + weight;
                     if (!dist.containsKey(e.dest) || dist.get(e.dest) > newDist) {
                         dist.put(e.dest, newDist);
                         q.add(e.dest);
                         prev.put(e.dest.value, node.value);
-//                        Node dest = e.dest;
-//                        dest.prevNode = node.value;
-//                        System.out.println("node" + node);
-//                        System.out.println("prevNode" + dest);
-//                        adjList.put(dest, adjList.get(dest));
-//                        System.out.println(adjList);
                     }
                 }
             }
@@ -127,6 +112,12 @@ public class CodeDjikstra {
         int weight;
         Node dest;
 
+
+        public Edge(int weight, Node dest) {
+            this.weight = weight;
+            this.dest = dest;
+        }
+
         @Override
         public String toString() {
             return "Edge{" +
@@ -139,6 +130,14 @@ public class CodeDjikstra {
     public static class Node{
         int value;
         int prevNode;
+
+        public Node(int value, int prevNode) {
+            this.value = value;
+            this.prevNode = prevNode;
+        }
+
+        public Node() {
+        }
 
         @Override
         public String toString() {
