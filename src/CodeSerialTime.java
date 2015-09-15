@@ -42,23 +42,26 @@ public class CodeSerialTime {
 
     public static int bfs(char[][][] plate, int startX, int startY, int numEmpty){
         boolean[][][] visited = new boolean[plate.length][plate[0].length][plate[0][0].length];
-        int timeCounter = 0;
+
 
         int[] currentPos = {0, startX, startY};
         Queue<int[]> q = new LinkedList<int[]>();
         q.add(currentPos);
         visited[currentPos[0]][currentPos[1]][currentPos[2]] = true;
+        int numVisited = 1;
 
         while(!q.isEmpty()){
             int[] pos = q.poll();
             int z = pos[0];
             int x = pos[1];
             int y = pos[2];
+
 //            System.out.println(Arrays.toString(pos));
-            timeCounter++;
-            numEmpty--;
-            if(numEmpty == 0)
-                return timeCounter;
+//            numEmpty--;
+
+//            if(numEmpty == 0)
+//                return timeCounter;
+
 
             //add next to queue
             int[] dz6 = {-1, 0, 1, 0, 0, 0};
@@ -66,27 +69,27 @@ public class CodeSerialTime {
             int[] dy6 = {0, 0, 0, 1, -1, 0};
 
             for(int d = 0; d < dz6.length; d++){
-                for(int a = 0; a < dx6.length; a++){
-                    for(int b = 0; b < dy6.length; b++){
-                        int xdx = x + dx6[a];
-                        int ydy = y + dy6[b];
-                        int zdz = z + dz6[d];
-                        if(0 <= zdz && zdz < visited.length && 0 <= xdx && xdx < visited[0].length &&
-                                0 <= ydy && ydy < visited[0][0].length){
-                            if(plate[zdz][xdx][ydy] == '.'  && !visited[zdz][xdx][ydy]) {
-                                int[] addPos = {zdz, xdx, ydy};
-                                visited[zdz][xdx][ydy] = true;
-                                q.add(addPos);
-//                                System.out.println(Arrays.toString(addPos));
+                    int xdx = x + dx6[d];
+                    int ydy = y + dy6[d];
+                    int zdz = z + dz6[d];
+                    if(0 <= zdz && zdz < visited.length && 0 <= xdx && xdx < visited[0].length &&
+                            0 <= ydy && ydy < visited[0][0].length){
+                        if(plate[zdz][xdx][ydy] == '.'  && !visited[zdz][xdx][ydy]) {
+                            int[] addPos = {zdz, xdx, ydy};
+                            visited[zdz][xdx][ydy] = true;
+                            numVisited++;
+//                            System.out.println(numVisited);
+
+                            q.add(addPos);
+//                            System.out.println(Arrays.toString(addPos));
 //                                System.out.println(visited[zdz][xdx][ydy]);
-                            }
                         }
-                    }
                 }
             }
 
+
         }
-        return timeCounter;
+        return numVisited;
     }
 
 //    public static int[] addNext(int[] current, boolean[][][] visited){
