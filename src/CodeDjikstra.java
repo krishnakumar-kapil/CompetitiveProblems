@@ -59,7 +59,7 @@ public class CodeDjikstra {
     public static String dijkstra(Map<Node, List<Edge>> adjList, Node start, Node end){
         final Map<Node, Integer> dist = new HashMap<Node, Integer>();
         final Map<Integer, Integer> prev = new HashMap<Integer, Integer>();
-        PriorityQueue<Node> q = new PriorityQueue<Node>(10, new Comparator<Node>(){
+        PriorityQueue<Node> q = new PriorityQueue<Node>(adjList.size(), new Comparator<Node>(){
             public int compare(Node o1, Node o2) {
                 Integer dist1 = dist.get(o1);
                 Integer dist2 = dist.get(o2);
