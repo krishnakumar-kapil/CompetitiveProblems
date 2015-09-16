@@ -35,35 +35,10 @@ public class CodeMissileSilos {
             System.out.println(dijkstra(adjMatrix, capital, distanceToSilo));
         }
 
-//        public static int bfs(int[][] adjMatrix, int start, int siloDist){
-//            Queue<Integer> q = new LinkedList<Integer>();
-//            HashMap<Integer, Integer> dist = new HashMap<Integer, Integer>();
-//            HashSet<Integer> visited = new HashSet<Integer>();
-//
-//            q.add(start);
-//            visited.add(start);
-//            dist.put(start, 0);
-//            int numSilos = 0;
-//            while(!q.isEmpty()){
-//                int current = q.poll();
-//                if(dist.containsKey(current) && dist.get(current) == siloDist)
-//                    numSilos++;
-//
-////                if(dist.containsKey(current) && dist.get(current) > siloDist)
-////                    break;
-//                for(int m = 0; m < adjMatrix.length; m++){
-//                    if(!visited.contains(m)) {
-//                        int length = adjMatrix[current][m];
-//                    }
-//                }
-//            }
-//
-//            return numSilos;
-//        }
-
     public static int dijkstra(int[][] adjMatrix, int start, int siloDist){
         final Map<Integer, Integer> dist = new HashMap<Integer,Integer>();
-        Map<Integer, Integer> prev = new HashMap<Integer, Integer>();
+//        Map<Integer, Integer> prev = new HashMap<Integer, Integer>();
+        int numSilo = 0;
         PriorityQueue<Integer> q = new PriorityQueue<Integer>(adjMatrix.length, new Comparator<Integer>(){
             public int compare(Integer o1, Integer o2) {
                 Integer dist1 = dist.get(o1);
@@ -77,7 +52,7 @@ public class CodeMissileSilos {
         q.add(start);
         dist.put(start, 0);
         while(!q.isEmpty()){
-            System.out.println(q);
+//            System.out.println(q);
             int city = q.poll();
             int cityDist = !dist.containsKey(city) ? 0: dist.get(city);
             for(int e = 0; e < adjMatrix[0].length; e++){
@@ -85,23 +60,74 @@ public class CodeMissileSilos {
 //                    System.out.println("edge exists for city and "+e);
                     int length = adjMatrix[city][e];
                     int newLength = length + cityDist;
+                    int destLength = dist.get(e) == null ? 0 : dist.get(e);
                     if (!dist.containsKey(e) || dist.get(e) >= newLength ) {
                         dist.put(city, length);
                         q.add(e);
-                        prev.put(e, city);
+//                        prev.put(e, city);
                     }
                 }
             }
         }
 
-        System.out.println(dist);
 
-        int numSilo = 0;
+//        dist.put(start, 0);
+        System.out.println(dist);
+//
         for(int city = 0; city < adjMatrix.length; city++){
-            if(dist.containsKey(city) && dist.get(city) <= siloDist)
+//            if (dist.containsKey(city) && dist.get(city) == siloDist) {
+//                System.out.println("condition met: "+city + " ,");
+//                numSilo++;
+//            }
+//
+//            for(int city2 = 0; city2 < adjMatrix.length; city2++) {
+//                int distU = dist.containsKey(city) ? dist.get(city) : 0;
+//                int distV = dist.containsKey(city2) ? dist.get(city2) : 0;
+//                int w = adjMatrix[city][city2] + distU;
+//                if(distU < siloDist && w > siloDist){
+//                    int w2 = w - siloDist + distV;
+//                    if(w2 > siloDist || (w2 == siloDist && city < city2)) {
+//                        System.out.println("condition met: "+city + " ," + city2);
+//                        numSilo++;
+//                    }
+//                }
+
+//                if (dist.containsKey(city) && (dist.get(city) <= siloDist))
+//                    numSilo++;
+//                System.out.println((city+1) + " , " +(city2+1));
+//            for(int city2 = 0; city2 < adjMatrix.length; city2++) {
+            int distU = dist.get(city) == null ? 0 : dist.get(city);
+            if(distU == siloDist)
                 numSilo++;
+            for (int city2 = 0; city2 < city; city2++) {
+                if (adjMatrix[city][city2] != 0) {
+                    int distV = dist.get(city2) == null ? 0 : dist.get(city2);
+                    int w = adjMatrix[city][city2];
+                    boolean addS = addSilo(distU, distV, siloDist, w, city, city2);
+                    System.out.println(addS);
+                    if (addS)
+                        numSilo++;
+                }
+//                System.out.println();
+
+        }
         }
         return numSilo;
+    }
+
+    public static boolean addSilo(int distU, int distV, int siloDist, int w, int u, int v){
+        System.out.println("u: "+u +" v: "+v);
+        System.out.println("distU: "+distU + " distV: "+distV + " siloDist: "+siloDist+ " w: "+w);
+        if(distU < siloDist && (siloDist - distU < w) && (w - (siloDist - distU) + distV > siloDist))
+            return true;
+        else if(distV < siloDist && (siloDist - distV < w) && (w - (siloDist - distV) + distU > siloDist))
+            return true;
+        else if(distU < siloDist && distV < siloDist && (distU + distV + w == 2*siloDist))
+            return true;
+//        else if(distU == siloDist || distV == siloDist)
+//            return true;
+        else
+            return false;
     }
 
     public static void print(int[][] adjMatrix){
