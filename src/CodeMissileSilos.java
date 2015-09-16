@@ -12,7 +12,7 @@ public class CodeMissileSilos {
             Scanner sc = new Scanner(System.in);
             int n = sc.nextInt(); //num cities
             int m = sc.nextInt(); //num roads
-            int capital = sc.nextInt(); //capital
+            int capital = sc.nextInt() - 1; //capital - convert to array format
 
             int[][] adjMatrix = new int[n][n];
 
@@ -73,26 +73,32 @@ public class CodeMissileSilos {
                 return dist1 - dist2;
             }
         });
-        System.out.println(dist);
+//        System.out.println(dist);
         q.add(start);
+        dist.put(start, 0);
         while(!q.isEmpty()){
             System.out.println(q);
             int city = q.poll();
             int cityDist = !dist.containsKey(city) ? 0: dist.get(city);
             for(int e = 0; e < adjMatrix[0].length; e++){
-                int length = adjMatrix[city][e];
-                int newLength = length + cityDist;
-                if(newLength < cityDist){
-                    dist.put(city, length);
-                    q.add(e);
-                    prev.put(e, city);
+                if(adjMatrix[city][e] != 0) {
+//                    System.out.println("edge exists for city and "+e);
+                    int length = adjMatrix[city][e];
+                    int newLength = length + cityDist;
+                    if (!dist.containsKey(e) || dist.get(e) >= newLength ) {
+                        dist.put(city, length);
+                        q.add(e);
+                        prev.put(e, city);
+                    }
                 }
             }
         }
 
+        System.out.println(dist);
+
         int numSilo = 0;
         for(int city = 0; city < adjMatrix.length; city++){
-            if(dist.containsKey(city) && dist.get(city) == siloDist)
+            if(dist.containsKey(city) && dist.get(city) <= siloDist)
                 numSilo++;
         }
         return numSilo;
