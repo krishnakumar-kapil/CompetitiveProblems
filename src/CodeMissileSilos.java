@@ -61,11 +61,12 @@ public class CodeMissileSilos {
                     int length = adjMatrix[city][e];
                     int newLength = length + cityDist;
                     int destLength = dist.get(e) == null ? 0 : dist.get(e);
-                    if (!dist.containsKey(e) || dist.get(e) >= newLength ) {
+                    if (!dist.containsKey(e) || destLength > newLength ) {
                         dist.put(city, length);
                         q.add(e);
 //                        prev.put(e, city);
                     }
+
                 }
             }
         }
@@ -73,45 +74,69 @@ public class CodeMissileSilos {
 
 //        dist.put(start, 0);
         System.out.println(dist);
+
+        for(int u = 0; u < adjMatrix.length; u++){
+            int uDist = dist.containsKey(u) ?  dist.get(u) : 0;
+//            System.out.println();
+            System.out.println("u: "+u + "udist: "+uDist );
+            if(uDist == siloDist) {
+                System.out.println("AWESOME: "+u);
+                numSilo++;
+            }
+            else{
+                if(uDist < siloDist){
+                    for(int v = 0; v < adjMatrix.length; v++){
+                        if(adjMatrix[u][v] != 0) {
+//                            System.out.println("u: " + u + " v: " + v);
+                            int eWeight = adjMatrix[u][v];
+                            int vDist = dist.containsKey(v) ? dist.get(v) : 0;
+                            System.out.println("uDist: " + u + " vDist: " + v + " eWeight: " + eWeight + " dist: " + siloDist);
+                            if (uDist + eWeight > siloDist) {
+                                int distFU = siloDist - uDist;
+                                int distFV = siloDist - vDist;
+//                                System.out.println("distFU: "+distFU + " distFV: "+distFV);
+
+                                if (distFU + distFV == eWeight) {
+                                    if (u < v) {
+//                                        System.out.println("uDist: " + u + " vDist: " + v + " eWeight: " + eWeight + " dist: " + siloDist);
+                                        numSilo++;
+                                    }
+                                } else if (distFU + distFV < eWeight) {
+                                    System.out.println("uDist: " + u + " vDist: " + v + " eWeight: " + eWeight + " dist: " + siloDist);
+                                    numSilo++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+//        for (int key : map.keySet()) {
+//            Node node = map.get(key);
+//            if (node.distance == L) {
+//                count++;
+//            } else {
+//                if (node.distance < L) {
+//                    for (int nborKey : node.nbors.keySet()) {
+//                        Edge e = node.nbors.get(nborKey);
+//                        if (node.distance + e.weight > L) {
+//                            int srcDist = L - node.distance;
+//                            int destDist = L - e.dest.distance;
 //
-        for(int city = 0; city < adjMatrix.length; city++){
-//            if (dist.containsKey(city) && dist.get(city) == siloDist) {
-//                System.out.println("condition met: "+city + " ,");
-//                numSilo++;
-//            }
-//
-//            for(int city2 = 0; city2 < adjMatrix.length; city2++) {
-//                int distU = dist.containsKey(city) ? dist.get(city) : 0;
-//                int distV = dist.containsKey(city2) ? dist.get(city2) : 0;
-//                int w = adjMatrix[city][city2] + distU;
-//                if(distU < siloDist && w > siloDist){
-//                    int w2 = w - siloDist + distV;
-//                    if(w2 > siloDist || (w2 == siloDist && city < city2)) {
-//                        System.out.println("condition met: "+city + " ," + city2);
-//                        numSilo++;
+//                            if (srcDist + destDist == e.weight) {
+//                                if (e.src.id < e.dest.id) {
+//                                    count++;
+//                                }
+//                            } else if (srcDist + destDist < e.weight) {
+//                                count++;
+//                            }
+//                        }
 //                    }
 //                }
-
-//                if (dist.containsKey(city) && (dist.get(city) <= siloDist))
-//                    numSilo++;
-//                System.out.println((city+1) + " , " +(city2+1));
-//            for(int city2 = 0; city2 < adjMatrix.length; city2++) {
-            int distU = dist.get(city) == null ? 0 : dist.get(city);
-            if(distU == siloDist)
-                numSilo++;
-            for (int city2 = 0; city2 < city; city2++) {
-                if (adjMatrix[city][city2] != 0) {
-                    int distV = dist.get(city2) == null ? 0 : dist.get(city2);
-                    int w = adjMatrix[city][city2];
-                    boolean addS = addSilo(distU, distV, siloDist, w, city, city2);
-                    System.out.println(addS);
-                    if (addS)
-                        numSilo++;
-                }
-//                System.out.println();
-
-        }
-        }
+//            }
+//        }
         return numSilo;
     }
 
