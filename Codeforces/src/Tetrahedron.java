@@ -9,18 +9,16 @@ public class Tetrahedron {
     public static void main(String[] args){
         Scanner sc = new Scanner(System.in);
         int n = sc.nextInt();
-
-        int[] dp = new int[n+1];
-        dp[0] = 0;
-        dp[1] = 0;
-        dp[2] = 3;
-        dp[3] = 3;
-
-        for(int i = 3; i < dp.length; i++){
-
+        long endD = 1;
+        long endOther = 0;
+        long MOD = (long) (1e9 + 7);
+        for (int i = 0; i < n; i++) {
+            long newEndD = endOther * 3 % MOD;
+            long newEndOther = (endD + endOther * 2) % MOD;
+            endD = newEndD;
+            endOther = newEndOther;
         }
-
-        System.out.println(dp[n]);
+        System.out.println(endD);
 
     }
 
