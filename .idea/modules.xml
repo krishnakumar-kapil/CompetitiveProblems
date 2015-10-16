@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/Codeforces/Codeforces.iml" filepath="$PROJECT_DIR$/Codeforces/Codeforces.iml" />
       <module fileurl="file://$PROJECT_DIR$/Competitive.iml" filepath="$PROJECT_DIR$/Competitive.iml" />
       <module fileurl="file://$PROJECT_DIR$/Hackerrank/Hackerrank.iml" filepath="$PROJECT_DIR$/Hackerrank/Hackerrank.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Interview/Interview.iml" filepath="$PROJECT_DIR$/Interview/Interview.iml" />
     </modules>
   </component>
 </project>
