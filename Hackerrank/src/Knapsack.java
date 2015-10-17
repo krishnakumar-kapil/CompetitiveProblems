@@ -17,6 +17,24 @@ public class Knapsack {
                 int val = sc.nextInt();
                 a[j] = val;
             }
+
+            int[] weights = new int[k + 1];
+            for(int w = 0; w <= k; w++){
+                //every point --> find the one below the amount
+                //
+                int max = 0;
+                for(int item: a){
+                    if(w - item >= 0) {
+                        int val = weights[w - item];
+                        if(val + item > max && val + item <= k) max = val + item;
+                    }
+//                    System.out.println(max);
+                }
+                weights[w] = max;
+
+            }
+//            System.out.println(Arrays.toString(weights));
+            System.out.println(weights[k]);
         }
     }
 }
